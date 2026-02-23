@@ -5,9 +5,18 @@
 
 > **Disclaimer:** This protocol is provided as-is, for informational purposes only. It reflects my personal experience setting up Claude Code sandboxing and may not cover all edge cases or security scenarios. Use at your own risk. The author assumes no responsibility for any damage, data loss, or security issues resulting from following this guide. Always review the [official Claude Code documentation](https://code.claude.com/docs/en/sandboxing) for the most up-to-date information. Security configurations should be validated for your specific environment and threat model.
 
+## Why This Exists
+
+Out of the box, Claude Code forces a bad tradeoff: micromanage every action so it does not break your machine, or give it broad permission and hope it does not wipe files or leak something sensitive. That is not a serious way to operate.
+
+Sandbox mode changes the equation by adding OS-level containment. It restricts where writes can happen, limits command execution, and puts boundaries around network access. The goal is simple: let Claude run autonomously without turning it into a loaded gun pointed at your laptop.
+
+In practice, getting this to work properly on Windows with WSL2 was not trivial, even with the official documentation. What follows is the set of steps that worked for me after trial and error. It is not authoritative, but it is a concrete, reproducible path that made sandbox mode behave the way it is supposed to.
+
+
 ---
 
-Placeholders — substitute with your values:
+**Placeholders — substitute with your values:**
 
 - `<WSL_USER>` = your Linux username (created on first Ubuntu launch)
 - `<WIN_USER>` = your Windows username (for `/mnt/c/Users/<WIN_USER>/...`)
