@@ -1,7 +1,8 @@
 # Claude Code Sandbox Setup Protocol (WSL2 on Windows)
 
-**Author:** Nir Adar ([niradar@gmail.com](mailto:niradar@gmail.com))
-**Date:** February 23, 2026
+**Author:** Nir Adar ([niradar@gmail.com](mailto:niradar@gmail.com)) | 
+**Date:** February 23, 2026 | 
+**Last Update:** February 24, 2026
 
 > **Disclaimer:** This protocol is provided as-is, for informational purposes only. It reflects my personal experience setting up Claude Code sandboxing and may not cover all edge cases or security scenarios. Use at your own risk. The author assumes no responsibility for any damage, data loss, or security issues resulting from following this guide. Always review the [official Claude Code documentation](https://code.claude.com/docs/en/sandboxing) for the most up-to-date information. Security configurations should be validated for your specific environment and threat model.
 
@@ -112,7 +113,7 @@ Add hooks to `~/.claude/settings.json` to log blocked Bash commands across all p
         "hooks": [
           {
             "type": "command",
-            "command": "jq -r '{time: now | strftime(\"%Y-%m-%d %H:%M:%S\"), command: .tool_input.command, error: (.error | split(\"\\n\") | last | select(. != \"\") // .error[:200])}' >> ~/claude-bash-failures.log"
+            "command": "jq -r '{time: now | strftime(\"%Y-%m-%d %H:%M:%S\"), command: .tool_input.command, error: (.error | split(\"\\n\") | last | select(. != \"\") // .error[:200])}' >> ~/claude-bash-failures.log || true"
           }
         ]
       }
@@ -183,7 +184,9 @@ Create `.claude/settings.local.json` in your project root (this file is gitignor
         "pypi.org",
         "files.pythonhosted.org",
         "raw.githubusercontent.com",
-        "objects.githubusercontent.com"
+        "objects.githubusercontent.com",
+        "github.com",
+        "*.github.com"
       ],
       "allowLocalBinding": false
     }
@@ -202,7 +205,6 @@ Create `.claude/settings.local.json` in your project root (this file is gitignor
       "Read(~/.ssh/**)",
       "Read(~/.aws/**)",
       "Read(~/.gnupg/**)",
-      "Read(~/.config/**)",
       "Read(//mnt/c/Users/**)",
       "Read(**/.env)",
       "Read(**/.env.*)",
