@@ -233,9 +233,10 @@ Create `.claude/settings.local.json` in your project root (this file is gitignor
       "Read(~/.aws/**)",
       "Read(~/.gnupg/**)",
       "Read(//mnt/c/Users/**)",
-      "Read(**/.env)",
-      "Read(**/.env.*)",
-      "Read(**/secrets/**)"
+      "Read(.env)",
+      "Read(.env.local)",
+      "Read(.env.production)",
+      "Read(.env.development)"
     ]
   }
 }
