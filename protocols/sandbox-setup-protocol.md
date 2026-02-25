@@ -2,7 +2,7 @@
 
 **Author:** Nir Adar ([niradar@gmail.com](mailto:niradar@gmail.com)) | 
 **Date:** February 23, 2026 | 
-**Last Update:** February 24, 2026
+**Last Update:** February 25, 2026
 
 > **Disclaimer:** This protocol is provided as-is, for informational purposes only. It reflects my personal experience setting up Claude Code sandboxing and may not cover all edge cases or security scenarios. Use at your own risk. The author assumes no responsibility for any damage, data loss, or security issues resulting from following this guide. Always review the [official Claude Code documentation](https://code.claude.com/docs/en/sandboxing) for the most up-to-date information. Security configurations should be validated for your specific environment and threat model.
 
@@ -131,6 +131,32 @@ Example log output:
 
 # Part 2: Per-Project Setup (do for each new project)
 
+> ⚠️ **Do not run Claude Code from `/mnt/c/` or any Windows-mounted path.**
+>
+> WSL2 accesses the Windows filesystem over a 9P network protocol. Every file operation crosses an OS boundary. With the sandbox adding its own overhead on top, this makes Claude Code unusable — constant freezes, stalled timers, and tasks that should take minutes stretching into hours.
+>
+> **Always use Option A**. If your project lives on the Windows side, copy it to the Linux filesystem first (see below). You can still open the files from Windows via `\\wsl$\Ubuntu\home\<WSL_USER>\projects\`.
+
+## Copying projects between Windows and WSL
+
+The 9P bridge is slow in both directions. To avoid it, copy from the Windows side using PowerShell:
+
+**Windows → Linux:**
+
+```powershell
+xcopy C:\projects\<your-project> \\wsl$\Ubuntu\home\<WSL_USER>\projects\<your-project>\ /E /I
+```
+
+**Linux → Windows:**
+
+```powershell
+xcopy \\wsl$\Ubuntu\home\<WSL_USER>\projects\<your-project> C:\projects\<your-project>\ /E /I
+```
+
+The `\\wsl$\` path lets Windows access the Linux filesystem directly — no 9P bottleneck. `/E` copies all subdirectories including empty ones, `/I` assumes the destination is a directory.
+
+Do **not** use `cp` across `/mnt/c/` for large projects. It works, but it crawls.
+
 ## Step 1: Navigate to the project folder
 
 **Critical**: The sandbox scopes write access to the directory you launch Claude from. Do **not** start Claude from `~`.
@@ -147,6 +173,7 @@ cd ~/projects/<your-project>
 ```bash
 cd /mnt/c/<PROJECT_DIR>
 ```
+As written earlier - this option is not recommended at all. If you care of your time, don't use it. 
 
 ## Step 2: Enable sandbox for this project
 
